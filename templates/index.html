@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block title %}Create • AI-Artify+{% endblock %}
+
+{% block hero %}
+<section class="hero-band">
+    <div class="hero-text">
+        <h1>Transform prompts into vibrant masterpieces</h1>
+        <p>Describe your vision and let AI-Artify+ render it with enhanced clarity, color science, and post-processing.</p>
+    </div>
+    <div class="hero-stats">
+        <div class="stat-card">
+            <span class="stat-value">{{ session["username"] }}</span>
+            <span class="stat-label">Logged in creator</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-value">4K+</span>
+            <span class="stat-label">Styles supported</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-value">Ultra</span>
+            <span class="stat-label">Enhancement profile</span>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block content %}
+<div class="grid grid--two-columns">
+    <section class="panel panel--primary">
+        <header class="panel-header">
+            <h2>Prompt composer</h2>
+            <p>Craft vivid descriptions. We’ll optimize wording, then enhance the generated image automatically.</p>
+        </header>
+        <form method="POST" class="prompt-form">
+            <label for="prompt">Your prompt</label>
+            <textarea id="prompt" name="prompt" placeholder="E.g. Futuristic city skyline at dusk, cinematic lighting, reflective water, ultrawide shot" required>{{ request.form.get("prompt", "") }}</textarea>
+            <div class="form-actions">
+                <button type="submit" class="primary-button">Generate Artwork</button>
+                <span class="hint">Ctrl + Enter to submit</span>
+            </div>
+        </form>
+        {% if optimized_prompt %}
+        <div class="callout callout--success">
+            <h3>Optimized Prompt</h3>
+            <p>{{ optimized_prompt }}</p>
+        </div>
+        {% endif %}
+        {% if error %}
+        <div class="callout callout--error">
+            <h3>Generation failed</h3>
+            <p>{{ error }}</p>
+        </div>
+        {% endif %}
+    </section>
+
+    <aside class="panel panel--glass">
+        <header class="panel-header">
+            <h2>Live preview</h2>
+            <p>Each image blends optimized prompts with post-generation enhancement for crisp detail.</p>
+        </header>
+        {% if image %}
+        <div class="image-frame">
+            <img src="{{ url_for('static', filename='images/' + image) }}" alt="Generated artwork preview">
+        </div>
+        <div class="preview-meta">
+            <div>
+                <span class="meta-label">File</span>
+                <span class="meta-value">{{ image }}</span>
+            </div>
+            <div>
+                <span class="meta-label">Generated</span>
+                <span class="meta-value">{{ optimized_prompt|default("—") }}</span>
+            </div>
+        </div>
+        <a class="secondary-button" href="{{ url_for('gallery') }}">View in gallery</a>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-illustration"></div>
+            <h3>No artwork yet</h3>
+            <p>Submit a prompt to watch your first masterpiece arrive in seconds.</p>
+        </div>
+        <div class="quick-prompts">
+            <h4>Need inspiration?</h4>
+            <ul>
+                <li>“Surreal forest of bioluminescent trees, volumetric light, pastel palette.”</li>
+                <li>“Portrait of a cyberpunk violinist under neon rain, dramatic rim lighting.”</li>
+                <li>“Art deco poster of a rocket launch, bold typography, golden hour glow.”</li>
+            </ul>
+        </div>
+        {% endif %}
+    </aside>
+</div>
+
+<section class="feature-strip">
+    <article class="feature-card">
+        <h3>Smart prompt tuning</h3>
+        <p>Autopilot rewrites your ideas into high-performing prompts so you can stay focused on imagination.</p>
+    </article>
+    <article class="feature-card">
+        <h3>Built-in enhancement</h3>
+        <p>Images are refined with calibrated brightness, contrast, and sharpness for gallery-ready results.</p>
+    </article>
+    <article class="feature-card">
+        <h3>Personal gallery</h3>
+        <p>Every generation is archived to your profile—revisit, download, or iterate anytime.</p>
+    </article>
+</section>
+{% endblock %}

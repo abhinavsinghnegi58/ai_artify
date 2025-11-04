@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Sign in • AI-Artify+{% endblock %}
+
+{% block hero %}
+<section class="auth-hero">
+    <h1>Welcome back, creator</h1>
+    <p>Sign in to continue crafting AI-enhanced artwork and explore your personal gallery.</p>
+</section>
+{% endblock %}
+
+{% block content %}
+<div class="auth-card">
+    <form method="POST" class="auth-form">
+        <label for="username">Username</label>
+        <input id="username" type="text" name="username" placeholder="Enter username" required>
+
+        <label for="password">Password</label>
+        <input id="password" type="password" name="password" placeholder="Enter password" required>
+
+        <button type="submit" class="primary-button">Sign In</button>
+    </form>
+    {% if error %}
+    <div class="callout callout--error">
+        <h3>Unable to sign in</h3>
+        <p>{{ error }}</p>
+    </div>
+    {% endif %}
+    <p class="auth-switch">New to AI-Artify+? <a href="{{ url_for('register') }}">Create an account</a></p>
+</div>
+{% endblock %}

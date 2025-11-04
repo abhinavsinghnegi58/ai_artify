@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}AI-Artify+{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block head_extra %}{% endblock %}
+</head>
+<body>
+<div class="page-shell">
+    <header class="app-header">
+        <div class="logo">
+            <span class="logo-mark">AI</span>
+            <span class="logo-text">Artify+</span>
+        </div>
+        <nav class="main-nav">
+            {% if session.get("user_id") %}
+            <a href="{{ url_for('index') }}" class="{% if request.endpoint == 'index' %}active{% endif %}">Create</a>
+            <a href="{{ url_for('gallery') }}" class="{% if request.endpoint == 'gallery' %}active{% endif %}">Gallery</a>
+            <a href="https://platform.openai.com/docs/guides/images" target="_blank" rel="noopener">Tips</a>
+            {% endif %}
+        </nav>
+        <div class="header-actions">
+            {% if session.get("user_id") %}
+            <div class="user-chip">
+                <span class="avatar">{{ session["username"][:1]|upper }}</span>
+                <span class="username">{{ session["username"] }}</span>
+            </div>
+            <a class="ghost-button" href="{{ url_for('logout') }}">Sign out</a>
+            {% endif %}
+        </div>
+    </header>
+
+    <main class="app-main">
+        {% block hero %}{% endblock %}
+        <div class="content-container">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <footer class="app-footer">
+        <p>Crafted with creativity • AI-Artify+</p>
+    </footer>
+</div>
+</body>
+</html>

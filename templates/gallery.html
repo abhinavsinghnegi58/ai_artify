@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Gallery • AI-Artify+{% endblock %}
+
+{% block hero %}
+<section class="hero-band hero-band--compact">
+    <div class="hero-text">
+        <h1>{{ username }}’s gallery</h1>
+        <p>Replay every creation, download favorites, and spark inspiration for your next prompt.</p>
+    </div>
+    <div class="hero-actions">
+        <a class="primary-button" href="{{ url_for('index') }}">Create new artwork</a>
+    </div>
+</section>
+{% endblock %}
+
+{% block content %}
+{% if images %}
+<div class="gallery-grid">
+    {% for img in images %}
+    <article class="gallery-card">
+        <div class="gallery-media">
+            <img src="{{ url_for('static', filename='images/' + img.filename) }}" alt="{{ img.prompt }}">
+        </div>
+        <div class="gallery-details">
+            <div class="prompt-snippet">{{ img.prompt }}</div>
+            <div class="meta-row">
+                <span>{{ img.timestamp }}</span>
+                <a class="ghost-button" href="{{ url_for('static', filename='images/' + img.filename) }}" download>Download</a>
+            </div>
+        </div>
+    </article>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state empty-state--gallery">
+    <div class="empty-illustration"></div>
+    <h3>Your gallery is waiting</h3>
+    <p>Nothing here yet. Head to the creator and bring your first idea to life.</p>
+    <a class="primary-button" href="{{ url_for('index') }}">Generate artwork</a>
+</div>
+{% endif %}
+{% endblock %}
