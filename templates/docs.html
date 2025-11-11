@@ -1,0 +1,90 @@
+<!-- Page for curating personal retrieval documents. -->
+{% extends "base.html" %}
+{% block title %}Docs - AI-Artify+{% endblock %}
+
+{% block hero %}
+<section class="hero-band hero-band--compact">
+    <div class="hero-text">
+        <h1>Knowledge base</h1>
+        <p>Store style notes, past prompts, or mood-board ideas that fuel retrieval-augmented generations.</p>
+    </div>
+</section>
+{% endblock %}
+
+{% block content %}
+<div class="grid grid--two-columns docs-layout">
+    <section class="panel panel--primary">
+        <header class="panel-header">
+            <h2>Add document</h2>
+            <p>New entries are embedded automatically and synced with the FAISS index.</p>
+            <p class="doc-count">{{ doc_count }} / {{ doc_limit }} saved</p>
+        </header>
+        <form method="POST" class="prompt-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <label for="text">Document text</label>
+            <textarea id="text" name="text" placeholder="Describe a style guide, lighting trick, or prompt you like" required></textarea>
+            <label class="rag-toggle">
+                <input type="checkbox" id="share_public" name="share_public" value="on">
+                <span>Share this document with the community so other creators can reference it.</span>
+            </label>
+            <div class="form-actions">
+                <button type="submit" class="primary-button">Save document</button>
+                <span class="hint">Auto-indexed via OpenAI embeddings</span>
+            </div>
+        </form>
+        {% if doc_error %}
+        <div class="callout callout--error">
+            <h3>Something went wrong</h3>
+            <p>{{ doc_error }}</p>
+        </div>
+        {% endif %}
+        {% if doc_count >= doc_limit %}
+        <div class="callout callout--muted">
+            <h3>Storage full</h3>
+            <p>Remove older documents to make space for fresh inspirations.</p>
+        </div>
+        {% endif %}
+    </section>
+
+    <section class="panel panel--glass">
+        <header class="panel-header">
+            <h2>My documents</h2>
+            <p>Latest additions appear first. Keep entries short for crisp retrieval.</p>
+        </header>
+        {% if docs %}
+        <ul class="docs-list">
+            {% for doc in docs %}
+            <li>
+                <div class="doc-meta">
+                    <span>Saved {{ doc.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+                    <span class="tag {% if doc.is_public %}tag--community{% else %}tag--private{% endif %}">
+                        {% if doc.is_public %}Shared{% else %}Private{% endif %}
+                    </span>
+                </div>
+                <p>{{ doc.text }}</p>
+            </li>
+            {% endfor %}
+        </ul>
+        <div class="pagination">
+            {% if has_prev %}
+            <a class="ghost-button" href="{{ url_for('docs', page=page - 1) }}">Previous</a>
+            {% else %}
+            <span class="ghost-button ghost-button--disabled">Previous</span>
+            {% endif %}
+            <span>Page {{ page }}</span>
+            {% if has_next %}
+            <a class="ghost-button" href="{{ url_for('docs', page=page + 1) }}">Next</a>
+            {% else %}
+            <span class="ghost-button ghost-button--disabled">Next</span>
+            {% endif %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-illustration"></div>
+            <h3>No entries yet</h3>
+            <p>Capture your favorite references and they will power the RAG pipeline instantly.</p>
+        </div>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}

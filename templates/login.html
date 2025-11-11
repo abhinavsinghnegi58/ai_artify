@@ -1,5 +1,6 @@
+<!-- Authentication view for returning creators. -->
 {% extends "base.html" %}
-{% block title %}Sign in • AI-Artify+{% endblock %}
+{% block title %}Sign in - AI-Artify+{% endblock %}
 
 {% block hero %}
 <section class="auth-hero">
@@ -11,6 +12,7 @@
 {% block content %}
 <div class="auth-card">
     <form method="POST" class="auth-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <label for="username">Username</label>
         <input id="username" type="text" name="username" placeholder="Enter username" required>
 

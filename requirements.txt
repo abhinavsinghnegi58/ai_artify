@@ -1,5 +1,11 @@
 Flask
 Flask-SQLAlchemy
+Flask-WTF
+filelock
+faiss-cpu
+numpy
 openai
 Pillow
 requests
+faiss-cpu
+numpy

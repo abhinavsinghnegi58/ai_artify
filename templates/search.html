@@ -1,0 +1,100 @@
+<!-- Dense retrieval search UI with relevance judgments. -->
+{% extends "base.html" %}
+{% block title %}RAG Search - AI-Artify+{% endblock %}
+
+{% block hero %}
+<section class="hero-band hero-band--compact">
+    <div class="hero-text">
+        <h1>RAG search & judging</h1>
+        <p>Probe your stored snippets, inspect similarity scores, and log binary or graded relevance labels.</p>
+    </div>
+</section>
+{% endblock %}
+
+{% block content %}
+<div class="grid grid--two-columns search-layout">
+    <section class="panel panel--primary">
+        <header class="panel-header">
+            <h2>Query knowledge base</h2>
+            <p>Enter a fresh prompt fragment to see the closest stored inspirations.</p>
+        </header>
+        {% if not retrieval_available %}
+        <div class="callout callout--muted">
+            <h3>Retrieval disabled</h3>
+            <p>Connect an OPENAI_API_KEY to enable embeddings, search, and judgment logging.</p>
+        </div>
+        {% endif %}
+        <form method="POST" class="prompt-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <label for="query">Search query</label>
+            <textarea id="query" name="query" placeholder="Retro synthwave lighting blueprint" required>{{ query }}</textarea>
+            <label for="k">Top-k results</label>
+            <input id="k" type="number" name="k" min="1" max="10" value="{{ top_k }}">
+            <div class="form-actions">
+                <button type="submit" class="primary-button" {% if not retrieval_available %}disabled{% endif %}>Retrieve</button>
+                <span class="hint">Embeddings: text-embedding-3-small x cosine (FAISS)</span>
+            </div>
+        </form>
+        {% if search_error %}
+        <div class="callout callout--error">
+            <h3>Search issue</h3>
+            <p>{{ search_error }}</p>
+        </div>
+        {% endif %}
+    </section>
+
+    <section class="panel panel--glass">
+        <header class="panel-header">
+            <h2>Results & judgments</h2>
+            <p>Assess each snippet to fuel evaluation metrics.</p>
+        </header>
+        {% if results %}
+        <ol class="search-results">
+            {% for item in results %}
+            <li>
+                <div class="retrieval-meta">
+                    <span>Rank {{ item.rank }}</span>
+                    <span>Score {{ item.score }}</span>
+                    <span class="tag {% if item.is_public %}tag--community{% else %}tag--private{% endif %}">
+                        {% if item.is_public %}Community{% else %}You{% endif %}
+                    </span>
+                </div>
+                <p class="retrieval-owner">
+                    Source: {% if item.is_public %}{{ item.owner_name }}{% else %}You{% endif %}
+                </p>
+                <p>{{ item.text }}</p>
+                <form method="POST" action="{{ url_for('judge') }}" class="judgment-form">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <input type="hidden" name="doc_id" value="{{ item.id }}">
+                    <input type="hidden" name="query" value="{{ query }}">
+                    <input type="hidden" name="rank" value="{{ item.rank }}">
+                    <input type="hidden" name="k" value="{{ top_k }}">
+                    <label for="binary-{{ item.id }}">Binary relevance</label>
+                    <select id="binary-{{ item.id }}" name="binary">
+                        <option value="">-- choose --</option>
+                        <option value="1">Relevant</option>
+                        <option value="0">Not relevant</option>
+                    </select>
+                    <label for="grade-{{ item.id }}">Graded relevance</label>
+                    <select id="grade-{{ item.id }}" name="grade">
+                        <option value="">-- choose --</option>
+                        <option value="0">0 - Irrelevant</option>
+                        <option value="1">1 - Fair</option>
+                        <option value="2">2 - Good</option>
+                        <option value="3">3 - Excellent</option>
+                    </select>
+                    <button type="submit" class="secondary-button">Save judgment</button>
+                </form>
+            </li>
+            {% endfor %}
+        </ol>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-illustration"></div>
+            <h3>No results yet</h3>
+            <p>Run a search or add more documents to unlock retrieval.</p>
+        </div>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}

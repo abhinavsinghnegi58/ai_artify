@@ -1,7 +1,9 @@
-# utils/image_enhancer.py
+"""Lightweight Pillow-based filters that polish generated images before display."""
+
 from PIL import Image, ImageEnhance
 
-def enhance_image(image_path):
+
+def enhance_image(image_path: str) -> str:
     """
     Applies simple post-processing filters:
     brightness, contrast, and sharpness adjustment.

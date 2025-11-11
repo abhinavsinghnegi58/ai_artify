@@ -1,10 +1,11 @@
+<!-- User gallery listing every generated image. -->
 {% extends "base.html" %}
-{% block title %}Gallery • AI-Artify+{% endblock %}
+{% block title %}Gallery - AI-Artify+{% endblock %}
 
 {% block hero %}
 <section class="hero-band hero-band--compact">
     <div class="hero-text">
-        <h1>{{ username }}’s gallery</h1>
+        <h1>{{ username }}'s gallery</h1>
         <p>Replay every creation, download favorites, and spark inspiration for your next prompt.</p>
     </div>
     <div class="hero-actions">
@@ -19,17 +20,30 @@
     {% for img in images %}
     <article class="gallery-card">
         <div class="gallery-media">
-            <img src="{{ url_for('static', filename='images/' + img.filename) }}" alt="{{ img.prompt }}">
+            <img src="{{ url_for('serve_image', image_id=img.id) }}" alt="{{ img.prompt }}">
         </div>
         <div class="gallery-details">
             <div class="prompt-snippet">{{ img.prompt }}</div>
             <div class="meta-row">
                 <span>{{ img.timestamp }}</span>
-                <a class="ghost-button" href="{{ url_for('static', filename='images/' + img.filename) }}" download>Download</a>
+                <a class="ghost-button" href="{{ url_for('serve_image', image_id=img.id, download=1) }}">Download</a>
             </div>
         </div>
     </article>
     {% endfor %}
+</div>
+<div class="pagination">
+    {% if has_prev %}
+    <a class="ghost-button" href="{{ url_for('gallery', page=page - 1) }}">Previous</a>
+    {% else %}
+    <span class="ghost-button ghost-button--disabled">Previous</span>
+    {% endif %}
+    <span>Page {{ page }}</span>
+    {% if has_next %}
+    <a class="ghost-button" href="{{ url_for('gallery', page=page + 1) }}">Next</a>
+    {% else %}
+    <span class="ghost-button ghost-button--disabled">Next</span>
+    {% endif %}
 </div>
 {% else %}
 <div class="empty-state empty-state--gallery">

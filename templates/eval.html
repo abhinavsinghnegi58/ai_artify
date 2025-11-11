@@ -1,0 +1,49 @@
+<!-- Dashboard summarizing retrieval metrics for the current user. -->
+{% extends "base.html" %}
+{% block title %}Evaluation - AI-Artify+{% endblock %}
+
+{% block hero %}
+<section class="hero-band hero-band--compact">
+    <div class="hero-text">
+        <h1>Retrieval evaluation</h1>
+        <p>Aggregated metrics update as you log judgments. Aim for high Precision@5 and nDCG@5.</p>
+    </div>
+</section>
+{% endblock %}
+
+{% block content %}
+<section class="panel panel--primary">
+    <header class="panel-header">
+        <h2>My metrics</h2>
+        <p>Evaluations are computed per user so you can benchmark personal retrieval quality.</p>
+    </header>
+    <div class="metrics-grid">
+        <div class="metric-card">
+            <span class="metric-label">Precision@5</span>
+            <span class="metric-value">{{ metrics.precision_at_k }}</span>
+        </div>
+        <div class="metric-card">
+            <span class="metric-label">MRR</span>
+            <span class="metric-value">{{ metrics.mrr }}</span>
+        </div>
+        <div class="metric-card">
+            <span class="metric-label">nDCG@5</span>
+            <span class="metric-value">{{ metrics.ndcg_at_k }}</span>
+        </div>
+        <div class="metric-card metric-card--muted">
+            <span class="metric-label">Queries judged</span>
+            <span class="metric-value">{{ metrics.query_count }}</span>
+        </div>
+        <div class="metric-card metric-card--muted">
+            <span class="metric-label">Total judgments</span>
+            <span class="metric-value">{{ metrics.judgment_count }}</span>
+        </div>
+    </div>
+    {% if not metrics.query_count %}
+    <div class="callout callout--muted">
+        <h3>No data yet</h3>
+        <p>Submit relevance labels on the RAG Search page to unlock evaluation metrics.</p>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}

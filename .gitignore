@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+instance/
+static/images/
+*.db
+*.sqlite3
+*.pkl
+faiss.index
+faiss_mapping.pkl
+.DS_Store
+Thumbs.db
+test.py

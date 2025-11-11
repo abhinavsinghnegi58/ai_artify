@@ -1,3 +1,4 @@
+/* Primary UI styling for the AI-Artify RAG experience. */
 :root {
     --bg-gradient: radial-gradient(circle at top left, #3d47ff 0%, #0f172a 35%, #050819 100%);
     --surface: rgba(12, 17, 34, 0.8);
@@ -346,6 +347,11 @@ input:focus {
     border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
+.ghost-button--disabled {
+    opacity: 0.4;
+    pointer-events: none;
+}
+
 .ghost-button:hover,
 .secondary-button:hover {
     border-color: rgba(255, 255, 255, 0.3);
@@ -574,6 +580,185 @@ input:focus {
     justify-content: space-between;
     font-size: 0.85rem;
     color: rgba(255, 255, 255, 0.45);
+}
+
+.rag-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 1rem 0;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+}
+
+.callout--context {
+    background: rgba(109, 91, 253, 0.15);
+    border-color: rgba(109, 91, 253, 0.4);
+}
+
+.callout--muted {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+.flash-container {
+    max-width: 960px;
+    margin: 0 auto 1.5rem auto;
+}
+
+.flash-container .callout {
+    margin-bottom: 0.75rem;
+}
+
+.tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.1rem 0.5rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+}
+
+.tag--community {
+    background: rgba(39, 224, 167, 0.15);
+    color: #86f7d5;
+}
+
+.tag--private {
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+.doc-count {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.retrieval-owner {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin: 0.3rem 0;
+}
+
+.retrieval-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 1rem;
+}
+
+.retrieval-list li {
+    padding: 1rem;
+    border-radius: var(--radius-md);
+    background: rgba(12, 17, 34, 0.65);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.retrieval-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 0.5rem;
+}
+
+.docs-layout,
+.search-layout {
+    gap: 1.5rem;
+}
+
+.docs-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 1rem;
+}
+
+.docs-list li {
+    padding: 1.2rem;
+    border-radius: var(--radius-md);
+    background: rgba(11, 16, 32, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.doc-meta {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin-bottom: 0.5rem;
+}
+
+.search-results {
+    margin: 0;
+    padding-left: 1rem;
+    display: grid;
+    gap: 1.5rem;
+}
+
+.search-results li {
+    list-style-position: inside;
+    padding: 1.2rem;
+    border-radius: var(--radius-md);
+    background: rgba(10, 14, 30, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.judgment-form {
+    margin-top: 1rem;
+    display: grid;
+    gap: 0.75rem;
+}
+
+.judgment-form select {
+    width: 100%;
+    padding: 0.65rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(6, 9, 20, 0.6);
+    color: var(--text-primary);
+}
+
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.metric-card {
+    padding: 1.3rem;
+    border-radius: var(--radius-md);
+    background: rgba(12, 18, 36, 0.85);
+    border: 1px solid rgba(109, 91, 253, 0.3);
+    display: grid;
+    gap: 0.35rem;
+}
+
+.metric-card--muted {
+    border-color: rgba(255, 255, 255, 0.08);
+    background: rgba(8, 11, 24, 0.8);
+}
+
+.metric-label {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.7);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.metric-value {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: var(--text-primary);
 }
 
 @media (max-width: 768px) {

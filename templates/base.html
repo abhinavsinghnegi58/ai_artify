@@ -1,3 +1,4 @@
+<!-- Base layout shared by every AI-Artify RAG view. -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,6 +22,9 @@
             {% if session.get("user_id") %}
             <a href="{{ url_for('index') }}" class="{% if request.endpoint == 'index' %}active{% endif %}">Create</a>
             <a href="{{ url_for('gallery') }}" class="{% if request.endpoint == 'gallery' %}active{% endif %}">Gallery</a>
+            <a href="{{ url_for('docs') }}" class="{% if request.endpoint == 'docs' %}active{% endif %}">Docs</a>
+            <a href="{{ url_for('search') }}" class="{% if request.endpoint == 'search' %}active{% endif %}">RAG Search</a>
+            <a href="{{ url_for('eval_view') }}" class="{% if request.endpoint == 'eval_view' %}active{% endif %}">Evaluation</a>
             <a href="https://platform.openai.com/docs/guides/images" target="_blank" rel="noopener">Tips</a>
             {% endif %}
         </nav>
@@ -35,15 +39,24 @@
         </div>
     </header>
 
-    <main class="app-main">
-        {% block hero %}{% endblock %}
-        <div class="content-container">
-            {% block content %}{% endblock %}
-        </div>
-    </main>
-
-    <footer class="app-footer">
-        <p>Crafted with creativity • AI-Artify+</p>
+    <main class="app-main">
+        {% block hero %}{% endblock %}
+        {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+        <div class="flash-container">
+            {% for category, message in messages %}
+            <div class="callout callout--{{ category }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        <div class="content-container">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <footer class="app-footer">
+        <p>Crafted with creativity &middot; AI-Artify+</p>
     </footer>
 </div>
 </body>

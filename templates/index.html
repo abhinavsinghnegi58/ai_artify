@@ -1,5 +1,6 @@
+<!-- Prompt creation screen with optional RAG context infusion. -->
 {% extends "base.html" %}
-{% block title %}Create • AI-Artify+{% endblock %}
+{% block title %}Create - AI-Artify+{% endblock %}
 
 {% block hero %}
 <section class="hero-band">
@@ -29,20 +30,62 @@
     <section class="panel panel--primary">
         <header class="panel-header">
             <h2>Prompt composer</h2>
-            <p>Craft vivid descriptions. We’ll optimize wording, then enhance the generated image automatically.</p>
+            <p>Craft vivid descriptions. We'll optimize wording, then enhance the generated image automatically.</p>
         </header>
         <form method="POST" class="prompt-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <label for="prompt">Your prompt</label>
             <textarea id="prompt" name="prompt" placeholder="E.g. Futuristic city skyline at dusk, cinematic lighting, reflective water, ultrawide shot" required>{{ request.form.get("prompt", "") }}</textarea>
+            <label class="rag-toggle">
+                <input type="checkbox" id="use_rag" name="use_rag" value="on" {% if rag_enabled %}checked{% endif %}>
+                <span>Use retrieval to enhance my prompt.</span>
+            </label>
+            <label class="rag-toggle">
+                <input type="checkbox" id="share_prompt" name="share_prompt" value="on" {% if share_prompt %}checked{% endif %}>
+                <span>Share the optimized prompt with the community (helps other creators via RAG).</span>
+            </label>
             <div class="form-actions">
                 <button type="submit" class="primary-button">Generate Artwork</button>
                 <span class="hint">Ctrl + Enter to submit</span>
             </div>
         </form>
+        {% if retrieval_error %}
+        <div class="callout callout--error">
+            <h3>Retrieval issue</h3>
+            <p>{{ retrieval_error }}</p>
+        </div>
+        {% endif %}
         {% if optimized_prompt %}
         <div class="callout callout--success">
             <h3>Optimized Prompt</h3>
             <p>{{ optimized_prompt }}</p>
+        </div>
+        {% endif %}
+        {% if retrieved_docs %}
+        <div class="callout callout--context">
+            <h3>Retrieved references</h3>
+            <ul class="retrieval-list">
+                {% for doc in retrieved_docs %}
+                <li>
+                    <div class="retrieval-meta">
+                        <span>Rank {{ doc.rank }}</span>
+                        <span>Score {{ doc.score }}</span>
+                        <span class="tag {% if doc.is_public %}tag--community{% else %}tag--private{% endif %}">
+                            {% if doc.is_public %}Community{% else %}You{% endif %}
+                        </span>
+                    </div>
+                    <p class="retrieval-owner">
+                        Source: {% if doc.is_public %}{{ doc.owner_name }}{% else %}You{% endif %}
+                    </p>
+                    <p>{{ doc.text }}</p>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% elif rag_enabled %}
+        <div class="callout callout--muted">
+            <h3>No context yet</h3>
+            <p>Add snippets in Docs or run more RAG generations to build your knowledge base.</p>
         </div>
         {% endif %}
         {% if error %}
@@ -60,16 +103,16 @@
         </header>
         {% if image %}
         <div class="image-frame">
-            <img src="{{ url_for('static', filename='images/' + image) }}" alt="Generated artwork preview">
+            <img src="{{ url_for('serve_image', image_id=image.id) }}" alt="Generated artwork preview">
         </div>
         <div class="preview-meta">
             <div>
                 <span class="meta-label">File</span>
-                <span class="meta-value">{{ image }}</span>
+                <span class="meta-value">{{ image.filename }}</span>
             </div>
             <div>
                 <span class="meta-label">Generated</span>
-                <span class="meta-value">{{ optimized_prompt|default("—") }}</span>
+                <span class="meta-value">{{ optimized_prompt|default("-") }}</span>
             </div>
         </div>
         <a class="secondary-button" href="{{ url_for('gallery') }}">View in gallery</a>
@@ -82,9 +125,9 @@
         <div class="quick-prompts">
             <h4>Need inspiration?</h4>
             <ul>
-                <li>“Surreal forest of bioluminescent trees, volumetric light, pastel palette.”</li>
-                <li>“Portrait of a cyberpunk violinist under neon rain, dramatic rim lighting.”</li>
-                <li>“Art deco poster of a rocket launch, bold typography, golden hour glow.”</li>
+                <li>"Surreal forest of bioluminescent trees, volumetric light, pastel palette."</li>
+                <li>"Portrait of a cyberpunk violinist under neon rain, dramatic rim lighting."</li>
+                <li>"Art deco poster of a rocket launch, bold typography, golden hour glow."</li>
             </ul>
         </div>
         {% endif %}
